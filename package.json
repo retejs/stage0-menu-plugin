@@ -1,6 +1,6 @@
 {
   "name": "stage0-rete-context-menu-plugin",
-  "version": "1.0.0-beta1",
+  "version": "1.0.0-beta2",
   "description": "Rete context menu using https://www.npmjs.com/package/stage0 (~1.6 kb framewok) renderer",
   "main": "build/context-menu-plugin.min.js",
   "repository": {

@@ -9,7 +9,18 @@ editor.use(ContextMenuPlugin, {
     searchBar: false,
     delay: 100,
     allocate(component) {
-        return ['Submenu']
+        if (component.name == "Number") {
+            return false; // Don't add
+        }
+        return ["submenu", "subsubmenu"];
+    },
+    staticMenu: { // Hand crafted menu
+        "Menu": {
+            "Add component": components[1],
+            "Fn": () => {
+                alert("Fn");
+            }
+        }
     }
 });
 ```

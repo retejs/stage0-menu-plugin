@@ -116,7 +116,7 @@ MenuComponent.prototype.rootUpdate = function(search = "") {
     });
   }
 
-  if (!this.visible) {
+  if (!this.visible || !this.visibleItems.length) {
     this.root.style.display = "none";
   } else {
     this.root.style.display = "block";
@@ -132,6 +132,41 @@ MenuComponent.prototype.rootUpdate = function(search = "") {
 
   this.renderedItems = this.visibleItems.slice();
   this.updateStyle();
+};
+
+MenuComponent.prototype._initStaticMenu = function(staticMenu, createNode, key = '') {
+  if (staticMenu.data) {
+    return { title: key, onClick: () => {
+      createNode(staticMenu);
+    }};
+  } else if (typeof staticMenu === "function") {
+    return { title: key, onClick: () => {
+      staticMenu();
+    }};
+  } else {
+    let items = [];
+    for (const key in staticMenu) {
+      const submenu = staticMenu[key];
+      const subItem = this._initStaticMenu(submenu, createNode, key);
+
+      let item;
+
+      if(Array.isArray(subItem)){
+        item = { title: key, subitems: subItem };  
+      }else{
+        item = subItem;  
+      }
+
+      items.push(item);
+    }
+
+    return items;
+  }
+};
+
+MenuComponent.prototype.initStaticMenu = function(staticMenu, createNode) {
+  this.items = this._initStaticMenu(staticMenu, createNode);
+  this.rootUpdate();
 };
 
 MenuComponent.prototype.addItem = function({ title, onClick, path = [] }) {
@@ -174,7 +209,7 @@ export function ItemComponent(item, delay, menuArgs) {
 ItemComponent.prototype.init = function(i) {
   BaseComponent.prototype.init.call(this, i);
 
-  if(i.onClick){
+  if (i.onClick) {
     this.root.onclick = () => {
       i.onClick(this.menuArgs);
     };
@@ -209,7 +244,7 @@ ItemComponent.prototype.getView = function() {
 };
 
 ItemComponent.prototype.rootUpdate = function({ title, subitems, onClick }) {
-  this.refs.title.nodeValue = title;  
+  this.refs.title.nodeValue = title;
   this.visibleSubItems = this.showSubItems ? subitems || [] : [];
 
   if (subitems && subitems.length) {
