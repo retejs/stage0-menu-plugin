@@ -14,7 +14,7 @@ editor.use(ContextMenuPlugin, {
         }
         return ["submenu", "subsubmenu"];
     },
-    staticMenu: { // Hand crafted menu
+    items: { // Hand crafted menu
         "Menu": {
             "Add component": components[1],
             "Fn": () => {

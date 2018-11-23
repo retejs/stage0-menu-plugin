@@ -134,38 +134,38 @@ MenuComponent.prototype.rootUpdate = function(search = "") {
   this.updateStyle();
 };
 
-MenuComponent.prototype._initStaticMenu = function(staticMenu, createNode, key = '') {
-  if (staticMenu.data) {
-    return { title: key, onClick: () => {
-      createNode(staticMenu);
-    }};
-  } else if (typeof staticMenu === "function") {
-    return { title: key, onClick: () => {
-      staticMenu();
-    }};
+MenuComponent.prototype.initItemsTrav = function(items, createNode, path = []) {
+  if (items.data) {
+    const title = path.pop();
+
+    this.addItem({
+      title: title,
+      onClick: () => {
+        createNode(items);
+      },
+      path
+    });
+  } else if (typeof items === "function") {
+    const title = path.pop();
+
+    this.addItem({
+      title: title,
+      onClick: () => {
+        items();
+      },
+      path
+    });
   } else {
-    let items = [];
-    for (const key in staticMenu) {
-      const submenu = staticMenu[key];
-      const subItem = this._initStaticMenu(submenu, createNode, key);
-
-      let item;
-
-      if(Array.isArray(subItem)){
-        item = { title: key, subitems: subItem };  
-      }else{
-        item = subItem;  
-      }
-
-      items.push(item);
+    for (const key in items) {
+      let newPath = path.slice();
+      newPath.push(key);
+      this.initItemsTrav(items[key], createNode, newPath);
     }
-
-    return items;
   }
 };
 
-MenuComponent.prototype.initStaticMenu = function(staticMenu, createNode) {
-  this.items = this._initStaticMenu(staticMenu, createNode);
+MenuComponent.prototype.initItems = function(items, createNode) {
+  this.initItemsTrav(items, createNode);
   this.rootUpdate();
 };
 

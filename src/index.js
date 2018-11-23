@@ -21,7 +21,7 @@ function createMenu(editor, props) {
   return menu;
 }
 
-function install(editor, { searchBar = true, delay = 1000, allocate = () => [], staticMenu = null }) {
+function install(editor, { searchBar = true, delay = 1000, allocate = () => [], items = null }) {
   editor.bind("hidecontextmenu");
 
   const mouse = { x: 0, y: 0 };
@@ -42,25 +42,25 @@ function install(editor, { searchBar = true, delay = 1000, allocate = () => [], 
     }
   });
 
-  if (staticMenu) {
-    menu.initStaticMenu(staticMenu, async (_component) => {
+  if (items) {
+    menu.initItems(items, async _component => {
       editor.addNode(await createNode(_component, mouse));
     });
-  } else {
-    editor.on("componentregister", component => {
-      const allocateRes = allocate(component);
-
-      if (allocateRes) {
-        menu.addItem({
-          title: component.name,
-          async onClick() {
-            editor.addNode(await createNode(component, mouse));
-          },
-          path: allocate(component)
-        });
-      }
-    });
   }
+
+  editor.on("componentregister", component => {
+    const allocateRes = allocate(component);
+
+    if (allocateRes) {
+      menu.addItem({
+        title: component.name,
+        async onClick() {
+          editor.addNode(await createNode(component, mouse));
+        },
+        path: allocateRes
+      });
+    }
+  });
 
   editor.on("mousemove", ({ x, y }) => {
     mouse.x = x;
