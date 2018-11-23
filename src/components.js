@@ -172,7 +172,8 @@ MenuComponent.prototype.initItems = function(items, createNode) {
 MenuComponent.prototype.addItem = function({ title, onClick, path = [] }) {
   let items = this.items;
 
-  for (let level of path) {
+  for (let levelKey in path) {
+    const level = path[levelKey];
     let exist = items.find(i => i.title === level);
 
     if (!exist) {
