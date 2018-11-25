@@ -1,8 +1,9 @@
 import { MenuComponent } from "./components";
 
-async function createNode(component, { x, y }) {
-  const node = await component.createNode();
+async function createNode(component, { data = {}, meta = {}, x, y }) {
+  const node = await component.createNode(data);
 
+  node.meta = meta;
   node.position[0] = x;
   node.position[1] = y;
 
@@ -39,6 +40,17 @@ function install(editor, { searchBar = true, delay = 1000, allocate = () => [], 
     onClick(args) {
       editor.removeNode(args.node);
       nodeMenu.hide();
+    }
+  });
+
+  nodeMenu.addItem({
+    title: "Clone",
+    async onClick(args) {
+      const { name, data, meta, position: [x, y] } = args.node;
+      const component = editor.components.get(name);
+
+      editor.addNode(await createNode(component, { data, meta, x: x + 10, y: y + 10 }));
+      nodeMenu.hide()
     }
   });
 
