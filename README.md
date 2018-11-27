@@ -41,7 +41,3 @@ allocate() { return ["Single submenu"] }
 ```js
 allocate(component) { return component.path } // where path is a stack of menu for every component
 ```
-
-TODO: 
-
-1) Allow both docked and standard menu

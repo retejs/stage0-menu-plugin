@@ -8,7 +8,7 @@ async function createNode(component, { data = {}, meta = {}, x, y, docked = fals
   if (!docked) {
     node.position[0] = x;
     node.position[1] = y;
-  }else{
+  } else {
     node.position[0] = -editor.view.area.transform.x;
     node.position[1] = -editor.view.area.transform.y;
   }
@@ -28,6 +28,28 @@ function createMenu(editor, props) {
   return menu;
 }
 
+function configureMenu(menu, { items, mouse, docked, editor, allocate }) {
+  if (items) {
+    menu.initItems(items, async _component => {
+      editor.addNode(await createNode(_component, { ...mouse, docked, editor }));
+    });
+  }
+
+  editor.on("componentregister", component => {
+    const allocateRes = allocate(component);
+
+    if (allocateRes) {
+      menu.addItem({
+        title: component.name,
+        async onClick() {
+          editor.addNode(await createNode(component, { ...mouse, docked, editor }));
+        },
+        path: allocateRes
+      });
+    }
+  });
+}
+
 function install(
   editor,
   { searchBar = true, delay = 1000, allocate = () => [], items = null, docked = false }
@@ -36,7 +58,8 @@ function install(
 
   const mouse = { x: 0, y: 0 };
 
-  const menu = createMenu(editor, { searchBar, delay, docked });
+  const menu = createMenu(editor, { searchBar, delay, docked: false });
+  const dockedMenu = !docked ? null : createMenu(editor, { searchBar, delay, docked: true });
   const nodeMenu = createMenu(editor, { searchBar: false, delay, docked: false });
 
   editor.on("hidecontextmenu", () => {
@@ -68,25 +91,8 @@ function install(
     }
   });
 
-  if (items) {
-    menu.initItems(items, async _component => {
-      editor.addNode(await createNode(_component, { ...mouse, docked, editor }));
-    });
-  }
-
-  editor.on("componentregister", component => {
-    const allocateRes = allocate(component);
-
-    if (allocateRes) {
-      menu.addItem({
-        title: component.name,
-        async onClick() {
-          editor.addNode(await createNode(component, { ...mouse, docked, editor }));
-        },
-        path: allocateRes
-      });
-    }
-  });
+  configureMenu(menu, { items, mouse, docked: false, editor, allocate });
+  if (dockedMenu) configureMenu(dockedMenu, { items, mouse, docked: true, editor, allocate });
 
   editor.on("mousemove", ({ x, y }) => {
     mouse.x = x;
@@ -106,7 +112,7 @@ function install(
 
     if (node) {
       nodeMenu.show(x, y, { node });
-    } else if(!docked) {
+    } else {
       menu.show(x, y);
     }
   });
