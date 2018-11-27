@@ -1,11 +1,11 @@
-Rete Stage0 renderer context menu plugin
+Rete Stage0 renderer menu plugin
 ====
 #### Rete.js plugin
 
 ```js
-import ContextMenuPlugin from 'stage0-rete-context-menu-plugin';
+import Stage0MenuPlugin from 'stage0-rete-menu-plugin';
 
-editor.use(ContextMenuPlugin, {
+editor.use(MenuPlugin, {
     searchBar: false,
     delay: 100,
     docked: true, // If you want Blender style docked menu

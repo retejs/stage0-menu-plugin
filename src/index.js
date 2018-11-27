@@ -86,7 +86,7 @@ function install(
       } = args.node;
       const component = editor.components.get(name);
 
-      editor.addNode(await createNode(component, { data, meta, x: x + 10, y: y + 10, editor, docked }));
+      editor.addNode(await createNode(component, { data, meta, x: x + 10, y: y + 10, editor, docked: false }));
       nodeMenu.hide();
     }
   });

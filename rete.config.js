@@ -2,7 +2,7 @@ import sass from 'rollup-plugin-sass';
 
 export default {
     input: 'src/index.js',
-    name: 'ContextMenuPlugin',
+    name: 'Stage0MenuPlugin',
     globals: {
         'stage0': 'stage0',
         'stage0/reconcile': 'stage0'

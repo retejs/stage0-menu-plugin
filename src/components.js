@@ -74,7 +74,7 @@ MenuComponent.prototype.init = function(scope) {
 };
 
 MenuComponent.prototype.getView = function() {
-  return h(["<div class='context-menu'><div #items></div></div>"]);
+  return h(["<div class='menu'><div #items></div></div>"]);
 };
 
 MenuComponent.prototype.getItemComponent = function(item, delay, menuArgs) {
