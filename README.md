@@ -8,14 +8,14 @@ import Stage0MenuPlugin from 'stage0-rete-menu-plugin';
 editor.use(MenuPlugin, {
     searchBar: false,
     delay: 100,
-    docked: true, // If you want Blender style docked menu
+    docked: true,
     allocate(component) {
         if (component.name == "Number") {
-            return false; // Don't add
+            return false;
         }
         return ["submenu", "subsubmenu"];
     },
-    items: { // Hand crafted menu
+    items: {
         "Menu": {
             "Add component": components[1],
             "Fn": () => {
@@ -28,16 +28,7 @@ editor.use(MenuPlugin, {
 | Options | Description | Default |
 |-|-|-|
 | `searchBar` | Showing search bar | `true`
-| `delay` | Delay hide, ms | `1000`
-| `allocate` | function for placing of components into submenu | `() => []`
-
-
-You can arbitrarily put a component in a submenu. Examples: 
-
-```js
-allocate() { return ["Single submenu"] }
-```
-
-```js
-allocate(component) { return component.path } // where path is a stack of menu for every component
-```
+| `delay` | Delay hide, ms | `100`
+| `allocate` | function for placing of components into submenu (return false to exclude) | `() => []`
+| `docked` | If you want Blender style docked menu | `false`
+| `items` | Hand crafted menu | `{}`
