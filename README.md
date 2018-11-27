@@ -8,6 +8,7 @@ import ContextMenuPlugin from 'stage0-rete-context-menu-plugin';
 editor.use(ContextMenuPlugin, {
     searchBar: false,
     delay: 100,
+    docked: true, // If you want Blender style docked menu
     allocate(component) {
         if (component.name == "Number") {
             return false; // Don't add
@@ -40,3 +41,7 @@ allocate() { return ["Single submenu"] }
 ```js
 allocate(component) { return component.path } // where path is a stack of menu for every component
 ```
+
+TODO: 
+
+1) Allow both docked and standard menu

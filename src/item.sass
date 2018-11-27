@@ -1,5 +1,6 @@
 @import './vars.sass'
 @import './common.sass'
+@import './common-docked.sass'
 
 .item
   @extend .item
@@ -16,3 +17,24 @@
     width: $width
     .subitem
       @extend .item
+
+.docked
+  .item
+    @extend .item-docked    
+    border: 0 !important    
+    &.hasSubitems:after
+      content: ''
+    .subitems
+      left: 0
+      top: auto
+      bottom: 100%
+      min-width: $width
+      .item
+        width: 100%
+        &.hasSubitems:after
+          content: '\25BA'
+        .subitems
+          left: 100%
+          top: 0
+          bottom: auto
+          width: $width

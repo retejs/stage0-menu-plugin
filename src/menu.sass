@@ -11,3 +11,18 @@
   margin-left: -$width/2
   .search
     @extend .item
+
+  &.docked
+    background-color: $context-color-docked
+    margin: 0
+    bottom: 0;
+    top: auto
+    padding: 0
+    width: 100%
+    .search, > div
+      display: inline-block
+      width: auto
+      height: 100%
+      border: 0
+      border-radius: 0
+      

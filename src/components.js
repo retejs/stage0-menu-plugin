@@ -44,7 +44,7 @@ export function extend(ChildClass, ParentClass) {
  * @param {*} socket
  * @param {*} type
  */
-export function MenuComponent({ searchBar, delay }) {
+export function MenuComponent({ searchBar, delay, docked }) {
   this.items = [];
 
   this.visibleItems = [];
@@ -56,6 +56,7 @@ export function MenuComponent({ searchBar, delay }) {
   this.args = {};
   this.delay = delay || 100;
   this.leafs = [];
+  this.docked = docked;
 
   this.showSearchBar = searchBar;
   this.searchBar = this.showSearchBar ? new SearchBarComponent(this) : null;
@@ -65,9 +66,11 @@ export function MenuComponent({ searchBar, delay }) {
   BaseComponent.call(this, {});
 }
 
-MenuComponent.prototype.init = function(io) {
-  BaseComponent.prototype.init.call(this, io.socket);
-  if (this.showSearchBar) this.root.insertBefore(this.searchBar.root, this.refs.items);
+MenuComponent.prototype.init = function(scope) {
+  BaseComponent.prototype.init.call(this, scope);
+  if (this.showSearchBar) {
+    this.root.insertBefore(this.searchBar.root, this.refs.items);
+  }
 };
 
 MenuComponent.prototype.getView = function() {
@@ -108,7 +111,7 @@ MenuComponent.prototype.updateStyle = function() {
 };
 
 MenuComponent.prototype.rootUpdate = function(search = "") {
-  this.visibleItems = this.visible ? this.items.slice() : [];
+  this.visibleItems = this.docked || this.visible ? this.items.slice() : [];
 
   if (search != "") {
     this.visibleItems = this.leafs.filter(item => {
@@ -116,10 +119,14 @@ MenuComponent.prototype.rootUpdate = function(search = "") {
     });
   }
 
-  if (!this.visible || !this.visibleItems.length) {
+  if (!this.docked && (!this.visible || !this.visibleItems.length)) {
     this.root.style.display = "none";
   } else {
     this.root.style.display = "block";
+  }
+
+  if (this.docked) {
+    this.root.classList.add("docked");
   }
 
   reconcile(
@@ -131,7 +138,10 @@ MenuComponent.prototype.rootUpdate = function(search = "") {
   );
 
   this.renderedItems = this.visibleItems.slice();
-  this.updateStyle();
+
+  if (!this.docked) {
+    this.updateStyle();
+  }
 };
 
 MenuComponent.prototype.initItemsTrav = function(items, createNode, path = []) {
