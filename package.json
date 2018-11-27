@@ -1,5 +1,5 @@
 {
-  "name": "stage0-rete-menu-plugin",
+  "name": "rete-stage0-menu-plugin",
   "version": "0.3.1",
   "description": "Rete menu using https://www.npmjs.com/package/stage0 (~1.6 kb framewok) renderer",
   "main": "build/menu-plugin.min.js",
