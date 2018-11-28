@@ -1,11 +1,11 @@
 {
   "name": "rete-stage0-menu-plugin",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Rete menu using https://www.npmjs.com/package/stage0 (~1.6 kb framewok) renderer",
   "main": "build/menu-plugin.min.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/retejs/stage0-rete-menu-plugin.git"
+    "url": "https://github.com/retejs/stage0-menu-plugin"
   },
   "scripts": {
     "build": "rete --build rete.config.js",
