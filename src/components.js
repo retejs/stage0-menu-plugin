@@ -58,7 +58,7 @@ export function MenuComponent({ searchBar, delay, docked }) {
   this.leafs = [];
   this.docked = docked;
 
-  this.showSearchBar = searchBar;
+  this.showSearchBar = searchBar === undefined ? true : searchBar;
   this.searchBar = this.showSearchBar ? new SearchBarComponent(this) : null;
 
   this.hideTimeout = null;
@@ -117,19 +117,29 @@ MenuComponent.prototype.rootUpdate = function(search = "") {
   this.visibleItems = this.docked || this.visible ? this.items.slice() : [];
 
   if (search != "") {
-    this.visibleItems = this.leafs.filter(item => {
-      return item.title.toLowerCase().indexOf(search.toLowerCase()) > -1;
-    });
+    this.visibleItems = this.docked
+      ? [
+          {
+            title: "Search",
+            visible: true,
+            subitems: this.leafs.filter(item => {
+              return item.title.toLowerCase().indexOf(search.toLowerCase()) > -1;
+            })
+          }
+        ]
+      : this.leafs.filter(item => {
+          return item.title.toLowerCase().indexOf(search.toLowerCase()) > -1;
+        });
   }
 
   if (!this.docked && (!this.visible || !this.visibleItems.length)) {
     this.root.style.display = "none";
   } else {
     this.root.style.display = "block";
-  }  
+  }
 
   keyed(
-    'title',
+    "title",
     this.refs.items,
     this.renderedItems,
     this.visibleItems,
@@ -194,7 +204,7 @@ MenuComponent.prototype.addItem = function({ title, onClick, path = [] }) {
     items = exist.subitems;
   }
 
-  this.leafs.push({ title, onClick });
+  this.leafs.push({ title, onClick, path });
 
   items.push({ title, onClick });
 
@@ -255,9 +265,14 @@ ItemComponent.prototype.getView = function() {
   return h(["<div class='item'>#title<div class='subitems' #subitems></div></div>"]);
 };
 
-ItemComponent.prototype.rootUpdate = function({ title, subitems, onClick }) {
-  if(this.title !== title)
-    this.refs.title.nodeValue = title;  
+ItemComponent.prototype.rootUpdate = function({ title, subitems, path, visible }) {
+  if (path) {
+    title = path.join(" › ") + " › " + title;
+  }
+
+  if (this.title !== title) this.refs.title.nodeValue = title;
+
+  this.title = title;
 
   if (subitems && subitems.length) {
     this.root.classList.add("hasSubitems");
@@ -265,10 +280,10 @@ ItemComponent.prototype.rootUpdate = function({ title, subitems, onClick }) {
     this.root.classList.remove("hasSubitems");
   }
 
-  this.visibleSubItems = this.showSubItems ? subitems || [] : [];
+  this.visibleSubItems = this.showSubItems || visible ? subitems || [] : [];
 
   keyed(
-    'title',
+    "title",
     this.refs.subitems,
     this.renderedSubItems,
     this.visibleSubItems,
@@ -294,10 +309,20 @@ SearchBarComponent.prototype.init = function(menu) {
   this.refs.search.onkeyup = e => {
     menu.rootUpdate(e.target.value);
   };
+  this.refs.search.onmousedown = e => {
+    e.stopPropagation();
+  };
+  this.refs.clear.onmousedown = e => {
+    e.stopPropagation();
+  };
+  this.refs.clear.onclick = e => {
+    this.refs.search.value = "";
+    menu.rootUpdate("");
+  };
 };
 
 SearchBarComponent.prototype.getView = function() {
-  return h(["<div class='search'><input #search/></div>"]);
+  return h(["<div class='search'><input #search/><span #clear>x</span></div>"]);
 };
 
 SearchBarComponent.prototype.rootUpdate = function() {};

@@ -50,17 +50,26 @@ function configureMenu(menu, { items, mouse, docked, editor, allocate }) {
   });
 }
 
-function install(
-  editor,
-  { searchBar = true, delay = 1000, allocate = () => [], items = null, docked = false }
-) {
+function install(editor, { menuOptions, dockedMenuOptions = null }) {
   editor.bind("hidecontextmenu");
 
   const mouse = { x: 0, y: 0 };
 
-  const menu = createMenu(editor, { searchBar, delay, docked: false });
-  const dockedMenu = !docked ? null : createMenu(editor, { searchBar, delay, docked: true });
-  const nodeMenu = createMenu(editor, { searchBar: false, delay, docked: false });
+  const menu = createMenu(editor, {
+    searchBar: menuOptions.searchBar,
+    delay: menuOptions.delay,
+    docked: false
+  });
+
+  const dockedMenu = !dockedMenuOptions
+    ? null
+    : createMenu(editor, {
+        searchBar: dockedMenuOptions.searchBar,
+        delay: dockedMenuOptions.delay,
+        docked: true
+      });
+
+  const nodeMenu = createMenu(editor, { searchBar: false, delay: menuOptions.delay, docked: false });
 
   editor.on("hidecontextmenu", () => {
     nodeMenu.hide();
@@ -86,13 +95,29 @@ function install(
       } = args.node;
       const component = editor.components.get(name);
 
-      editor.addNode(await createNode(component, { data, meta, x: x + 10, y: y + 10, editor, docked: false }));
+      editor.addNode(
+        await createNode(component, { data, meta, x: x + 10, y: y + 10, editor, docked: false })
+      );
       nodeMenu.hide();
     }
   });
 
-  configureMenu(menu, { items, mouse, docked: false, editor, allocate });
-  if (dockedMenu) configureMenu(dockedMenu, { items, mouse, docked: true, editor, allocate });
+  configureMenu(menu, {
+    items: menuOptions.items,
+    mouse,
+    docked: false,
+    editor,
+    allocate: menuOptions.allocate
+  });
+
+  if (dockedMenu)
+    configureMenu(dockedMenu, {
+      items: dockedMenuOptions.items,
+      mouse,
+      docked: true,
+      editor,
+      allocate: dockedMenuOptions.allocate
+    });
 
   editor.on("mousemove", ({ x, y }) => {
     mouse.x = x;
