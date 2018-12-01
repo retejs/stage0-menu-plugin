@@ -1,6 +1,6 @@
 {
   "name": "rete-stage0-menu-plugin",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Rete menu using https://www.npmjs.com/package/stage0 (~1.6 kb framewok) renderer",
   "main": "build/menu-plugin.min.js",
   "repository": {
@@ -18,7 +18,8 @@
     "stage0": "^0.0.11"
   },
   "devDependencies": {
+    "node-sass": "^4.9.3",
     "rete-cli": "^0.2.0",
-    "rollup-plugin-sass": "^0.6.1"
+    "rollup-plugin-postcss": "^1.6.3"
   }
 }

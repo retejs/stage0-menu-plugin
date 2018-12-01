@@ -1,5 +1,5 @@
 import h from "stage0";
-import { reconcile } from "stage0/reconcile";
+import { keyed } from "stage0/keyed";
 
 import "./menu.sass";
 import "./item.sass";
@@ -71,6 +71,9 @@ MenuComponent.prototype.init = function(scope) {
   if (this.showSearchBar) {
     this.root.insertBefore(this.searchBar.root, this.refs.items);
   }
+  if (this.docked) {
+    this.root.classList.add("docked");
+  }
 };
 
 MenuComponent.prototype.getView = function() {
@@ -123,13 +126,10 @@ MenuComponent.prototype.rootUpdate = function(search = "") {
     this.root.style.display = "none";
   } else {
     this.root.style.display = "block";
-  }
+  }  
 
-  if (this.docked) {
-    this.root.classList.add("docked");
-  }
-
-  reconcile(
+  keyed(
+    'title',
     this.refs.items,
     this.renderedItems,
     this.visibleItems,
@@ -214,6 +214,7 @@ export function ItemComponent(item, delay, menuArgs) {
   this.hideTimeout = null;
   this.delay = delay;
   this.menuArgs = menuArgs;
+  this.title;
   BaseComponent.call(this, item);
 }
 
@@ -255,8 +256,8 @@ ItemComponent.prototype.getView = function() {
 };
 
 ItemComponent.prototype.rootUpdate = function({ title, subitems, onClick }) {
-  this.refs.title.nodeValue = title;
-  this.visibleSubItems = this.showSubItems ? subitems || [] : [];
+  if(this.title !== title)
+    this.refs.title.nodeValue = title;  
 
   if (subitems && subitems.length) {
     this.root.classList.add("hasSubitems");
@@ -264,7 +265,10 @@ ItemComponent.prototype.rootUpdate = function({ title, subitems, onClick }) {
     this.root.classList.remove("hasSubitems");
   }
 
-  reconcile(
+  this.visibleSubItems = this.showSubItems ? subitems || [] : [];
+
+  keyed(
+    'title',
     this.refs.subitems,
     this.renderedSubItems,
     this.visibleSubItems,

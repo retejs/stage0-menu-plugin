@@ -2,6 +2,10 @@ Rete Stage0 renderer menu plugin
 ====
 #### Rete.js plugin
 
+Example: https://codepen.io/anon/pen/jQBxKe
+
+Package features a separate CSS stylesheet
+
 ```js
 import Stage0MenuPlugin from 'stage0-rete-menu-plugin';
 
