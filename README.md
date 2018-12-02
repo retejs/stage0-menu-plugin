@@ -9,12 +9,12 @@ Check/replace 'stage0-menu-plugin.debug.css' to add your own style
 ```js
 import Stage0MenuPlugin from 'stage0-rete-menu-plugin';
 
-editor.use(MenuPlugin, {
+editor.use(Stage0MenuPlugin, {
     menuOptions: {
         delay: 100,
         searchBar: false,
         allocate(component) {
-            if (component.name == "Number") {
+            if (component.name == "Add") {
                 return false;
             }
             return ["menu", "submenu"];
@@ -39,6 +39,9 @@ editor.use(MenuPlugin, {
             Menu: {
                 "Add component": {
                     Add: components[1]
+                },
+                "Add component 2": {
+                    X: components[1]
                 }
             }
         }

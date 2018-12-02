@@ -262,15 +262,15 @@ ItemComponent.prototype.getItemComponent = function(item) {
 };
 
 ItemComponent.prototype.getView = function() {
-  return h(["<div class='item'>#title<div class='subitems' #subitems></div></div>"]);
+  return h(["<div class='item'><span #title></span><div class='subitems' #subitems></div></div>"]);
 };
 
 ItemComponent.prototype.rootUpdate = function({ title, subitems, path, visible }) {
   if (path) {
-    title = path.join(" › ") + " › " + title;
+    title = path.join(" <i class='item-path-conn'></i> ") + " <i class='item-path-conn'></i> " + title;
   }
 
-  if (this.title !== title) this.refs.title.nodeValue = title;
+  if (this.title !== title) this.refs.title.innerHTML = title;
 
   this.title = title;
 
@@ -322,7 +322,7 @@ SearchBarComponent.prototype.init = function(menu) {
 };
 
 SearchBarComponent.prototype.getView = function() {
-  return h(["<div class='search'><input #search/><span #clear>x</span></div>"]);
+  return h(["<div class='search'><input #search/><span class='clear' #clear></span></div>"]);
 };
 
 SearchBarComponent.prototype.rootUpdate = function() {};
