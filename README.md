@@ -1,4 +1,7 @@
 Rete Stage0 renderer menu plugin
+
+## This repo is not maintained any more
+
 ====
 #### Rete.js plugin
 
